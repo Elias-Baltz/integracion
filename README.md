@@ -10,8 +10,8 @@ ver `requirements.txt`
 ## Instalación
 
 ```bash
-git clone https://github.com/Elias-Baltz/sucursales.git
-cd sucursales
+git clone https://github.com/Elias-Baltz/integracion.git
+cd integracion
 python -m venv venv
 venv\Scripts\activate en Windows
 pip install -r requirements.txt
