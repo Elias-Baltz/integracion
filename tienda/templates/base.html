@@ -1,0 +1,37 @@
+<!-- base.html -->
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Mi Sitio{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container">
+            <h1>Mi Tienda</h1>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="/">Inicio</a></li>
+                    <li><a href="{% url 'comprar' %}">Comprar</a></li>
+                    <li><a href="#">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}
+        
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>© 2025 Mi Sitio</p>
+    </footer>
+
+</body>
+</html>
