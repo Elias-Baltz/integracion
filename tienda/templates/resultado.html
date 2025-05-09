@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Resultado del Pago{% endblock %}
+
+{% block content %}
+    <section class="pago-resultado">
+        <h1>Resultado del Pago</h1>
+        <ul class="resultado-lista">
+            <li><strong>Estado:</strong> {{ response.status }}</li>
+            <li><strong>Orden:</strong> {{ response.buy_order }}</li>
+            <li><strong>Monto:</strong> ${{ response.amount }}</li>
+            <li><strong>Token:</strong> {{ response.token }}</li>
+        </ul>
+    </section>
+{% endblock %}
