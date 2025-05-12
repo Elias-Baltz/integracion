@@ -3,6 +3,7 @@ from transbank.webpay.webpay_plus.transaction import Transaction
 from transbank.webpay.webpay_plus.transaction import WebpayOptions
 from transbank.common.integration_type import IntegrationType
 import uuid
+from .models import Producto
 
 # Configura las opciones del comercio de integración
 options = WebpayOptions(
@@ -19,10 +20,11 @@ def index(request):
     return render(request, 'base.html')
 
 def comprar(request):
-    return render(request, 'comprar.html')
+    productos = Producto.objects.all()
+    return render(request, 'comprar.html', {'productos': productos})
 
 def iniciar_pago(request):
-    buy_order = str(uuid.uuid4()) 
+    buy_order = str(uuid.uuid4()).replace("-", "")[:26]
     session_id = "session123"
     amount = 10000
     return_url = request.build_absolute_uri("/respuesta/")

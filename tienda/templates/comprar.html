@@ -4,5 +4,18 @@
 
 {% block content %}
     <h2>Bienvenido a la tienda</h2>
+     <ul>
+        {% for producto in productos %}
+            <li>
+                <strong>{{ producto.nombre }}</strong><br>
+                {{ producto.descripcion }}<br>
+                Precio: ${{ producto.precio }}<br>
+                Stock: {{ producto.stock }} unidades<br>
+                Sucursal: {{ producto.sucursal }}<br>
+            </li>
+        {% empty %}
+            <li>No hay productos disponibles.</li>
+        {% endfor %}
+    </ul>
     <a href="{% url 'iniciar_pago' %}">Comprar</a>
 {% endblock %}
