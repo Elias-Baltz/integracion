@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from transbank.webpay.webpay_plus.transaction import Transaction
 from transbank.webpay.webpay_plus.transaction import WebpayOptions
 from transbank.common.integration_type import IntegrationType
+import uuid
 
 # Configura las opciones del comercio de integración
 options = WebpayOptions(
@@ -21,7 +22,7 @@ def comprar(request):
     return render(request, 'comprar.html')
 
 def iniciar_pago(request):
-    buy_order = "orden125"      
+    buy_order = str(uuid.uuid4()) 
     session_id = "session123"
     amount = 10000
     return_url = request.build_absolute_uri("/respuesta/")
