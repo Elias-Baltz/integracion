@@ -4,6 +4,21 @@
 
 {% block content %}
     <h2>Bienvenido a la tienda</h2>
+    <form method="get">
+    <input type="text" name="nombre" placeholder="Buscar producto..." value="{{ nombre }}">
+    
+    <select name="sucursal">
+        <option value="">Todas las sucursales</option>
+        {% for sucursal in sucursales %}
+            <option value="{{ sucursal.id }}" {% if sucursal.id|stringformat:"s" == sucursal_id %}selected{% endif %}>
+                {{ sucursal.nombre }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Filtrar</button>
+</form>
+
      <ul>
         {% for producto in productos %}
             <li>

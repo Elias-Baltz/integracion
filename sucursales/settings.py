@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     # Mis apps
     'tienda',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
