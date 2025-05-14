@@ -49,14 +49,14 @@ def comprar(request):
 
 def iniciar_pago(request):
     carrito = obtener_carrito(request)
-    total = carrito.total()
+    total = carrito.total
 
     if total == 0:
         return redirect('ver_carrito')  
 
     buy_order = str(uuid.uuid4()).replace("-", "")[:26]
     session_id = "session123"
-    amount = total
+    amount = int(total)
     return_url = request.build_absolute_uri("/respuesta/")
 
     # Aquí está el uso correcto de create
@@ -65,7 +65,14 @@ def iniciar_pago(request):
 
 def respuesta_pago(request):
     token = request.GET.get("token_ws")
+
+    if token:
+        carrito = obtener_carrito(request) 
+        carrito.items.all().delete()  
+        carrito.save()
+
     response = transaction.commit(token)
+
     return render(request, "resultado.html", {"response": response})
 
 #Api 
