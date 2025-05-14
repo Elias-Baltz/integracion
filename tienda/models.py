@@ -22,6 +22,7 @@ class Producto(models.Model):
 class Carrito(models.Model):
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
+    @property
     def total(self):
         return sum(item.total() for item in self.items.all())
     

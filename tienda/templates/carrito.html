@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load filtros %}
 
 {% block title %}Resultado del Pago{% endblock %}
 
@@ -7,12 +8,14 @@
 <ul>
     {% for item in carrito.items.all %}
         <li>
-            {{ item.producto.nombre }} - {{ item.cantidad }} x ${{ item.producto.precio }} = ${{ item.total }}
+            {{ item.producto.nombre }} - {{ item.cantidad }} x {{ item.producto.precio|formato_clp }} = {{ item.total|formato_clp }}
         </li>
     {% endfor %}
 </ul>
 
-<p><strong>Total: ${{ carrito.total }}</strong></p>
+<p><strong>Total: {{ carrito.total|formato_clp }}</strong></p>
+<p><strong>Total en USD: ${{ total_usd|floatformat:2 }}</strong>
+
 <form method="post" action="{% url 'limpiar_carrito' %}">
     {% csrf_token %}
     <button type="submit">Vaciar carrito</button>

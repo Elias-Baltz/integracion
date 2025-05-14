@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load filtros %}
 
 {% block title %}Comprar{% endblock %}
 
@@ -25,7 +26,7 @@
             <li>
                 <strong>{{ producto.nombre }}</strong><br>
                 {{ producto.descripcion }}<br>
-                Precio: ${{ producto.precio }}<br>
+                Precio: {{ producto.precio|formato_clp }}<br>
                 Stock: {{ producto.stock }} unidades<br>
                 Sucursal: {{ producto.sucursal.nombre }}<br>
 

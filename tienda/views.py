@@ -10,6 +10,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .serializers import ProductoSerializer, SucursalSerializer
 
+from decimal import Decimal
+
 # Configura las opciones del comercio de integración
 options = WebpayOptions(
     commerce_code="597055555532",  # Comercio de pruebas oficial
@@ -143,7 +145,24 @@ def agregar_al_carrito(request, producto_id):
 
 def ver_carrito(request):
     carrito = obtener_carrito(request)
-    return render(request, 'carrito.html', {'carrito': carrito})
+
+    try:
+        response = requests.get("https://api.exchangerate.host/latest?base=CLP&symbols=USD")
+        data = response.json()
+        clp_to_usd = Decimal(str(data['rates']['USD']))
+    except Exception:
+        clp_to_usd = Decimal('0.0011')  
+
+    total_usd = carrito.total * clp_to_usd  
+
+    context = {
+        'carrito': carrito,
+        'total_usd': total_usd,
+        'tipo_cambio': clp_to_usd,
+    }
+
+    return render(request, 'carrito.html', context)
+
 
 def limpiar_carrito(request):
     carrito_id = request.session.get("carrito_id")
