@@ -3,10 +3,10 @@
 {% block title %}Comprar{% endblock %}
 
 {% block content %}
-    <h2>Bienvenido a la tienda</h2>
-    <form method="get">
+<h2>Bienvenido a la tienda</h2>
+
+<form method="get">
     <input type="text" name="nombre" placeholder="Buscar producto..." value="{{ nombre }}">
-    
     <select name="sucursal">
         <option value="">Todas las sucursales</option>
         {% for sucursal in sucursales %}
@@ -15,22 +15,26 @@
             </option>
         {% endfor %}
     </select>
-
     <button type="submit">Filtrar</button>
 </form>
 
-     <ul>
+<form method="post" action="{% url 'agregar_al_carrito' 0 %}">
+    {% csrf_token %}
+    <ul>
         {% for producto in productos %}
             <li>
                 <strong>{{ producto.nombre }}</strong><br>
                 {{ producto.descripcion }}<br>
                 Precio: ${{ producto.precio }}<br>
                 Stock: {{ producto.stock }} unidades<br>
-                Sucursal: {{ producto.sucursal }}<br>
+                Sucursal: {{ producto.sucursal.nombre }}<br>
+
+                Cantidad: 
+                <input type="number" name="cantidad_{{ producto.id }}" value="0" min="0" max="{{ producto.stock }}">
             </li>
-        {% empty %}
-            <li>No hay productos disponibles.</li>
         {% endfor %}
     </ul>
-    <a href="{% url 'iniciar_pago' %}">Comprar</a>
+
+    <button type="submit">Agregar al carrito</button>
+</form>
 {% endblock %}

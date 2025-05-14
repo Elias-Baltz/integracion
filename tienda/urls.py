@@ -9,4 +9,8 @@ urlpatterns = [
     path('api/productos/sucursal/<int:sucursal_id>/', views.productos_por_sucursal, name='api_productos_por_sucursal'),
     path('api/sucursales/', views.sucursales_api, name='api_sucursales'),
 
+    path('carrito/', views.ver_carrito, name='ver_carrito'),
+    path('carrito/agregar/<int:producto_id>/', views.agregar_al_carrito, name='agregar_al_carrito'),
+    path('carrito/limpiar/', views.limpiar_carrito, name='limpiar_carrito'),
+
 ]

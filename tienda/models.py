@@ -18,3 +18,18 @@ class Producto(models.Model):
 
     def __str__(self):
         return f"{self.nombre} ({self.sucursal.nombre})"
+    
+class Carrito(models.Model):
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    def total(self):
+        return sum(item.total() for item in self.items.all())
+    
+class ItemCarrito(models.Model):
+    carrito = models.ForeignKey(Carrito, on_delete=models.CASCADE, related_name='items')
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField()
+
+    def total(self):
+        return self.cantidad * self.producto.precio
+    

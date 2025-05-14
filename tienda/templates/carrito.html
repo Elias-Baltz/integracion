@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Resultado del Pago{% endblock %}
+
+{% block content %}
+   <h2>Carrito de Compras</h2>
+<ul>
+    {% for item in carrito.items.all %}
+        <li>
+            {{ item.producto.nombre }} - {{ item.cantidad }} x ${{ item.producto.precio }} = ${{ item.total }}
+        </li>
+    {% endfor %}
+</ul>
+
+<p><strong>Total: ${{ carrito.total }}</strong></p>
+<form method="post" action="{% url 'limpiar_carrito' %}">
+    {% csrf_token %}
+    <button type="submit">Vaciar carrito</button>
+</form>
+
+
+<a href="{% url 'iniciar_pago' %}">Proceder al pago</a>
+
+{% endblock %}
