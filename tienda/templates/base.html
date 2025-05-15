@@ -7,21 +7,18 @@
     <meta charset="UTF-8">
     <title>{% block title %}Mi Sitio{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'styles.css' %}">
+    {% block extra_css %}
+    {% endblock %}
 </head>
 <body>
-
-    <header class="main-header">
-        <div class="container">
-            <h1>Mi Tienda</h1>
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="/">Inicio</a></li>
-                    <li><a href="{% url 'comprar' %}">Comprar</a></li>
-                    <li><a href="#">Contacto</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    <header>
+    <a href="#" class="logo">MiLogo</a>
+    <nav>
+      <a href="{% url 'index' %}">Inicio</a>
+      <a href="{% url 'comprar' %}">Comprar</a>
+      <a href="{% url 'ver_carrito' %}">Carrito</a>
+    </nav>
+  </header>
 
     <main>
         {% block content %}

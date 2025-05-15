@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load filtros %}
 
 {% block title %}Resultado del Pago{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'carrito.css' %}">
+{% endblock %}
 
 {% block content %}
    <h2>Carrito de Compras</h2>
@@ -21,7 +26,6 @@
     <button type="submit">Vaciar carrito</button>
 </form>
 
-
-<a href="{% url 'iniciar_pago' %}">Proceder al pago</a>
+<a href="{% url 'iniciar_pago' %}" class="btn-verde">Proceder al pago</a>
 
 {% endblock %}
