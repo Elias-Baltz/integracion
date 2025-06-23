@@ -10,8 +10,8 @@ django.setup()
 
 import grpc
 from concurrent import futures
-import producto_pb2
-import producto_pb2_grpc
+from tienda.grpc import producto_pb2
+from tienda.grpc import producto_pb2_grpc
 from tienda.models import Producto, Sucursal
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sucursales.settings")
