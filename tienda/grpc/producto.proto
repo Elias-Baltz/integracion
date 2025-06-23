@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package producto;
+
+service ProductoService {
+  rpc AgregarProducto(ProductoRequest) returns (ProductoResponse);
+}
+
+message ProductoRequest {
+  int32 sucursal_id = 1;
+  string nombre = 2;
+  string descripcion = 3;
+  double precio = 4;
+  int32 stock = 5;
+}
+
+message ProductoResponse {
+  bool exito = 1;
+  string mensaje = 2;
+}

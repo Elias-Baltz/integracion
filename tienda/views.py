@@ -12,14 +12,17 @@ from .serializers import ProductoSerializer, SucursalSerializer
 
 from decimal import Decimal
 
-# Configura las opciones del comercio de integración
+import grpc
+from tienda.grpc import producto_pb2
+from tienda.grpc import producto_pb2_grpc
+
+
 options = WebpayOptions(
-    commerce_code="597055555532",  # Comercio de pruebas oficial
-    api_key="579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C",  # API Key oficial de pruebas
+    commerce_code="597055555532",  
+    api_key="579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C", 
     integration_type=IntegrationType.TEST
 )
 
-# Crea una instancia de Transaction con las opciones configuradas
 transaction = Transaction(options)
 
 # Create your views here.
@@ -59,7 +62,6 @@ def iniciar_pago(request):
     amount = int(total)
     return_url = request.build_absolute_uri("/respuesta/")
 
-    # Aquí está el uso correcto de create
     response = transaction.create(buy_order, session_id, amount, return_url)
     return redirect(response['url'] + "?token_ws=" + response['token'])
 
@@ -181,3 +183,25 @@ def limpiar_carrito(request):
         except Carrito.DoesNotExist:
             pass
     return redirect('ver_carrito')  
+
+
+#GRPC
+
+def agregar_producto(request):
+    mensaje = ""
+    if request.method == "POST":
+        try:
+            with grpc.insecure_channel('localhost:50051') as channel:
+                stub = producto_pb2_grpc.ProductoServiceStub(channel)
+                response = stub.AgregarProducto(producto_pb2.ProductoRequest(
+                    sucursal_id=int(request.POST['sucursal_id']),
+                    nombre=request.POST['nombre'],
+                    descripcion=request.POST['descripcion'],
+                    precio=float(request.POST['precio']),
+                    stock=int(request.POST['stock']),
+                ))
+                mensaje = response.mensaje
+        except Exception as e:
+            mensaje = f"Error: {e}"
+
+    return render(request, 'agregar_producto.html', {"mensaje": mensaje})
