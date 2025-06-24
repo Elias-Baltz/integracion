@@ -97,28 +97,23 @@ def respuesta_pago(request):
     token = request.GET.get("token_ws")
 
     if token:
-        # Obtén el carrito actual del usuario
         carrito = obtener_carrito(request)
         
-        # Verifica si la transacción es exitosa
         response = transaction.commit(token)
         
-        # Si la transacción fue exitosa, actualiza el stock de los productos
-        if response['status'] == 'AUTHORIZED':  # O usa otro estado que sea apropiado
+        # Esto es para vaciar el carrito cuando se hga la compra
+        if response['status'] == 'AUTHORIZED':  
             for item in carrito.items.all():
                 producto = item.producto
                 cantidad_comprada = item.cantidad
 
-                # Resta la cantidad comprada al stock disponible
                 if producto.stock >= cantidad_comprada:
                     producto.stock -= cantidad_comprada
                     producto.save()
 
-            # Limpiar los items del carrito
             carrito.items.all().delete()  
             carrito.save()
         
-        # Retorna la respuesta para mostrar en el template
         return render(request, "resultado.html", {"response": response})
     
     return redirect('error')
@@ -231,8 +226,7 @@ def limpiar_carrito(request):
     return redirect('ver_carrito')  
 
 
-#GRPC
-
+# View del GRPC que funciona como el bridge
 def agregar_producto(request):
     mensaje = ""
     if request.method == "POST":
