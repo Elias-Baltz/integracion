@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,6 +43,8 @@ INSTALLED_APPS = [
     'tienda',
     'rest_framework'
 ]
+
+ASGI_APPLICATION = "sucursales.asgi.application"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

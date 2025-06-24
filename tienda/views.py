@@ -11,11 +11,15 @@ from rest_framework.response import Response
 from .serializers import ProductoSerializer, SucursalSerializer
 
 from decimal import Decimal
-
+# GRPC
 import grpc
 from tienda.grpc import producto_pb2
 from tienda.grpc import producto_pb2_grpc
 
+# SSE
+import asyncio
+from django.http import StreamingHttpResponse
+from asgiref.sync import sync_to_async
 
 options = WebpayOptions(
     commerce_code="597055555532",  
@@ -26,6 +30,30 @@ options = WebpayOptions(
 transaction = Transaction(options)
 
 # Create your views here.
+# SSE
+@sync_to_async(thread_sensitive=False)
+def get_productos_bajo_stock():
+    return list(
+        Producto.objects.filter(stock__lte=10).values('nombre', 'stock')
+    )
+
+async def sse_stream(request):
+    async def event_stream():
+        while True:
+            productos_bajo_stock = await get_productos_bajo_stock()
+
+            if productos_bajo_stock:
+                for producto in productos_bajo_stock:
+                    nombre = producto["nombre"]
+                    stock = producto["stock"]
+                    yield f"Advertencia: {nombre} tiene stock bajo ({stock} unidades)\n\n"
+            else:
+                yield "Stock: Todos los productos tienen stock suficiente\n\n"
+
+            await asyncio.sleep(5)
+
+    return StreamingHttpResponse(event_stream(), content_type='text/event-stream')
+
 def index(request):
     return render(request, 'base.html')
 
@@ -69,13 +97,31 @@ def respuesta_pago(request):
     token = request.GET.get("token_ws")
 
     if token:
-        carrito = obtener_carrito(request) 
-        carrito.items.all().delete()  
-        carrito.save()
+        # Obtén el carrito actual del usuario
+        carrito = obtener_carrito(request)
+        
+        # Verifica si la transacción es exitosa
+        response = transaction.commit(token)
+        
+        # Si la transacción fue exitosa, actualiza el stock de los productos
+        if response['status'] == 'AUTHORIZED':  # O usa otro estado que sea apropiado
+            for item in carrito.items.all():
+                producto = item.producto
+                cantidad_comprada = item.cantidad
 
-    response = transaction.commit(token)
+                # Resta la cantidad comprada al stock disponible
+                if producto.stock >= cantidad_comprada:
+                    producto.stock -= cantidad_comprada
+                    producto.save()
 
-    return render(request, "resultado.html", {"response": response})
+            # Limpiar los items del carrito
+            carrito.items.all().delete()  
+            carrito.save()
+        
+        # Retorna la respuesta para mostrar en el template
+        return render(request, "resultado.html", {"response": response})
+    
+    return redirect('error')
 
 #Api 
 @api_view(['GET', 'POST'])

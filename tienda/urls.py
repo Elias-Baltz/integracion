@@ -15,4 +15,7 @@ urlpatterns = [
 
      path('agregar-producto/', views.agregar_producto, name='agregar_producto'),
 
+     #SSE
+     path('stream/', views.sse_stream, name='sse_stream'),
+
 ]
